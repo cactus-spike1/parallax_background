@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройка Параллакса</title>
+    <style>
+        /* Общие стили */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: white;
+            height: 100vh;
+            overflow: hidden; /* Избегаем горизонтальной прокрутки */
+            perspective: 1px;
+            transform-style: preserve-3d;
+        }
+
+        /* Параллакс фон */
+        .parallax-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('minecraft-background.jpg'); /* Ваш фон */
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            transform: translateZ(-1px) scale(2); /* Эффект параллакса */
+            transition: transform 0.3s ease;
+        }
+
+        /* Основной контейнер */
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            height: calc(100vh - 80px); /* Высота экрана минус высота хедера */
+            box-sizing: border-box; /* Включаем поля в общую высоту */
+        }
+
+        .content {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            max-width: 800px;
+            text-align: center;
+            box-sizing: border-box; /* Включаем поля в общую ширину */
+        }
+
+        .settings-panel {
+            margin-bottom: 20px;
+        }
+
+        .settings-panel label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        .settings-panel input[type="range"] {
+            width: 100%;
+        }
+
+        .settings-panel span {
+            display: inline-block;
+            width: 50px;
+        }
+
+        #apply-settings {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #apply-settings:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .current-settings {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="parallax-background"></div>
+
+    <main>
+        <section class="content">
+            <h2>Настройки Параллакса</h2>
+            <div class="settings-panel">
+                <label for="x-speed">Скорость по X:</label>
+                <input type="range" id="x-speed" min="0" max="10" step="0.1" value="2">
+                <span id="x-speed-value">2</span>
+                <br>
+                <label for="y-speed">Скорость по Y:</label>
+                <input type="range" id="y-speed" min="0" max="10" step="0.1" value="2">
+                <span id="y-speed-value">2</span>
+                <br>
+                <button id="apply-settings">Применить настройки</button>
+            </div>
+            <div class="current-settings">
+                <h3>Текущие настройки:</h3>
+                <p id="current-settings">Скорость по X: 2, Скорость по Y: 2</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Инициализация значений параллакса
+        let xSpeed = 2;
+        let ySpeed = 2;
+
+        // Функция для обновления параллакса
+        function updateParallax() {
+            const parallaxBackground = document.querySelector('.parallax-background');
+            document.addEventListener('mousemove', function (e) {
+                const moveX = (e.pageX - window.innerWidth / 2) * xSpeed / 10;
+                const moveY = (e.pageY - window.innerHeight / 2) * ySpeed / 10;
+                parallaxBackground.style.transform = `translate(${moveX}px, ${moveY}px) scale(2)`;
+            });
+        }
+
+        // Применение настроек
+        function applySettings() {
+            xSpeed = parseFloat(document.getElementById('x-speed').value);
+            ySpeed = parseFloat(document.getElementById('y-speed').value);
+
+            document.getElementById('x-speed-value').textContent = xSpeed;
+            document.getElementById('y-speed-value').textContent = ySpeed;
+            document.getElementById('current-settings').textContent = `Скорость по X: ${xSpeed}, Скорость по Y: ${ySpeed}`;
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function () {
+            updateParallax();
+
+            // Управление ползунками
+            document.getElementById('x-speed').addEventListener('input', function () {
+                document.getElementById('x-speed-value').textContent = this.value;
+            });
+
+            document.getElementById('y-speed').addEventListener('input', function () {
+                document.getElementById('y-speed-value').textContent = this.value;
+            });
+
+            // Применение настроек при нажатии кнопки
+            document.getElementById('apply-settings').addEventListener('click', applySettings);
+        });
+    </script>
+</body>
+</html>
